@@ -2,6 +2,7 @@
 // import GoogleMapReact from "google-map-react";
 import { useState, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { useTypedSelector } from '@/app/hooks/useTypedSelector';
 
 const containerStyle = {
     width: '100%',
@@ -33,6 +34,8 @@ const Map = () => {
         setMap(null)
       }, [])
 
+      const { from } = useTypedSelector(store => store.taxi)
+
     return isLoaded ? (
         <div className='h-screen w-full'>
             {/* <GoogleMapReact
@@ -46,7 +49,12 @@ const Map = () => {
             /> */}
         <GoogleMap
             mapContainerStyle={containerStyle}
-            center={center}
+            center={from.location?.lat 
+              ? {
+                  lat: from.location.lat,
+                  lng: from.location.lng,
+                }
+              : center}
             zoom={13}
             onLoad={onLoad}
             onUnmount={onUnmount}

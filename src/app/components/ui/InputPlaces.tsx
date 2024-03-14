@@ -6,7 +6,7 @@ import {FiSearch} from  'react-icons/fi';
 import cn from 'classnames';
 
 interface IInputPlaces {
-    callbackSuccess: () => void;
+    callbackSuccess: (address: string, location: google.maps.LatLngLiteral) => void;
     type: 'from' | 'to';
 }
 export const InputPlaces: FC<IInputPlaces> = ({ callbackSuccess, type }) => {
@@ -20,8 +20,10 @@ export const InputPlaces: FC<IInputPlaces> = ({ callbackSuccess, type }) => {
         geocodeByAddress(address)
             .then(results => getLatLng(results[0]))
             .then(location => {
-                    callbackSuccess
+                    callbackSuccess(address, location)
+                    setAddress(address)
                 })
+            .catch(err => console.error('Error', err))
     }
 
     const setFocus = () => inputRef?.current?.focus()
