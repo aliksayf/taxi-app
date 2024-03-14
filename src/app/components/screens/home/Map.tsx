@@ -56,7 +56,7 @@ const Map = () => {
                 streetViewControl: false,
                 zoom: 13,
                 keyboardShortcuts: false,
-            }}
+              }}
         >
         { /* Child components, such as markers, info windows, etc. */ }
         <>MAP</>
