@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 
 import Head from 'next/head';
 import Script from 'next/script';
@@ -16,7 +16,7 @@ type FavIcon = {
 const FavIcon: FavIcon = {src: ''};
 
 const Layout:FC<ILayout> = ({children, title}) => {
-    const [isLoading, setIsLoading] = useState(false)
+    // const [isLoading, setIsLoading] = useState(false)
 
     // useEffect(() => {
     //     setIsLoading(true)
@@ -37,10 +37,10 @@ const Layout:FC<ILayout> = ({children, title}) => {
 
             <Script
                 strategy='beforeInteractive'
-                src={`https://maps.googleapis.con/maps/api/js?key=${process.env.MAP_KEY}&libraries=places`}
+                src={`https://maps.googleapis.com/maps/api/js?key=${process.env.MAP_API_KEY}&libraries=places`}
             />
             <div style={{maxWidth: 480}} className='mx-auto relative overflow-hidden'>
-                {isLoading ? <Loader /> : children}
+                {children}
             </div>
         </div>
     )
