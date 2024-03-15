@@ -1,7 +1,7 @@
 "use client"
 // import GoogleMapReact from "google-map-react";
-import { useState, useCallback } from 'react';
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { useState, useCallback, useEffect } from 'react';
+import { GoogleMap, useJsApiLoader, DirectionsRenderer } from '@react-google-maps/api';
 import { useTypedSelector } from '@/app/hooks/useTypedSelector';
 
 const containerStyle = {
@@ -21,6 +21,24 @@ const Map = () => {
       })
     
       const [map, setMap] = useState<google.maps.Map | null>(null)
+      const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null)
+      const { from, to } = useTypedSelector(store => store.taxi)
+
+      useEffect(() => {
+        const DirectionsService = new google.maps.DirectionsService();
+
+        DirectionsService.route({
+          origin: new google.maps.LatLng(from.location),
+          destination: new google.maps.LatLng(to.location),
+          travelMode: google.maps.TravelMode.DRIVING,
+        }, (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK) {
+            setDirections(result);
+          } else {
+            console.error(`error fetching directions ${result}`);
+          }
+        });
+      },[from, to])
     
       const onLoad = useCallback(function callback(map: google.maps.Map) {
         // This is just an example of getting and using the map instance!!! don't just blindly copy!
@@ -34,7 +52,6 @@ const Map = () => {
         setMap(null)
       }, [])
 
-      const { from } = useTypedSelector(store => store.taxi)
 
     return isLoaded ? (
         <div className='h-screen w-full'>
@@ -67,7 +84,7 @@ const Map = () => {
               }}
         >
         { /* Child components, such as markers, info windows, etc. */ }
-        <>MAP</>
+        {directions && <DirectionsRenderer directions={directions} />}
       </GoogleMap>
         </div>
     ) : null
