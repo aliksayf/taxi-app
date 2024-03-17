@@ -11,7 +11,6 @@ export const Options = () => {
     const { selectedOption, travelTime } = useTypedSelector(state => state.taxi)
 
     const { setSelectedOption } = useActions()
-    console.log(selectedOption)
 
 
     return (
@@ -30,7 +29,15 @@ export const Options = () => {
                         })} >
                             <Image className='m-auto' src={option.img} alt={option.title} width={50} height={50} />
                             <div className='text-sm' style={{ color: '#222' }}>{option.title}</div>
-                            <div className='text-md font-medium'>-${option.title}</div>
+                            <div className='text-md font-medium'style={{ color: '#222' }}>
+                               {travelTime 
+                               ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', currencyDisplay: 'narrowSymbol'})
+                                    .format(travelTime * option.multiplier) 
+                               : '- $'}
+                            </div>
+
+                           
+
                         </div>
                     </button>
                 ))}

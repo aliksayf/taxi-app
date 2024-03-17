@@ -4,19 +4,27 @@ import { FC, useEffect, useRef, useState } from "react"
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 import {FiSearch} from  'react-icons/fi';
 import cn from 'classnames';
+import { useTypedSelector } from "@/app/hooks/useTypedSelector";
 
 interface IInputPlaces {
+    place: string;
     callbackSuccess: (address: string, location: google.maps.LatLngLiteral) => void;
     type: 'from' | 'to';
 }
-export const InputPlaces: FC<IInputPlaces> = ({ callbackSuccess, type }) => {
+export const InputPlaces: FC<IInputPlaces> = ({ callbackSuccess, type, place }) => {
     
     const isFrom = type === 'from';
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const [address, setAddress] = useState('');
+    const [address, setAddress] = useState(place);
+    const { travelTime } = useTypedSelector(store => store.taxi)
 
+    useEffect(() => {
+        setAddress(place)
+    }, [place])
+    
     const handleSelect = (address: string) => {
+
         geocodeByAddress(address)
             .then(results => getLatLng(results[0]))
             .then(location => {
@@ -64,7 +72,7 @@ export const InputPlaces: FC<IInputPlaces> = ({ callbackSuccess, type }) => {
                         {
                             !isFrom && (
                                 <div className='absolute right-5 text-sm text-gray-400'>
-                                    -min.
+                                    {travelTime ? travelTime + '-min.' : ''}
                                 </div>
                             )}
                     </div>
@@ -76,13 +84,14 @@ export const InputPlaces: FC<IInputPlaces> = ({ callbackSuccess, type }) => {
 
                         {suggestions.map(suggestion => 
                             <div 
-                            {...getSuggestionItemProps(suggestion, {
-                                    key: suggestion.id,
+                                {...getSuggestionItemProps(suggestion, {
                                     className: cn('cursor-pointer p-3 text-gray-400', {
                                         'bg-gray-100': suggestion.active,
                                         'bg-white': !suggestion.active
-                                 })
-                            })}>
+                                    })
+                                })}
+                                key={suggestion.id}
+                            >
                                 <span>{suggestion.description}</span>
                             </div>
                         )}
